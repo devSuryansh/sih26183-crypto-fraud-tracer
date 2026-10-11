@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Crypto Fraud Tracer (SIH26183 demo)</title>
+<style>body{font-family:sans-serif;margin:1em}.card{border:1px solid #ccc;padding:8px;margin:8px 0}code{background:#eee}</style></head><body>
+<h2>Fraud-linked exchange identification – synthetic demo</h2><p><i>Fake addresses and sample exchanges only.</i></p>
+<input id="w" value="0xSUSPECT" size="30"> <button onclick="go()">Trace</button><div id="out"></div>
+<script>
+function go(){fetch('/api/trace?wallet='+encodeURIComponent(document.getElementById('w').value)).then(r=>r.json()).then(d=>{
+ const o=document.getElementById('out'); if(d.error){o.textContent=d.error+' (try '+d.try+')';return}
+ o.innerHTML=d.ranked_exchanges.map((e,i)=>`<div class="card"><b>#${i+1} ${e.exchange}</b> – confidence ${(e.confidence*100).toFixed(1)}% (score ${e.score})`+
+ e.paths.map(p=>`<div><code>${p.path.join(' → ')}</code> (${p.hops} hops, ${(p.share*100).toFixed(0)}% of value)</div>`).join('')+'</div>').join('')||'No exchange reached';});}
+go();
+</script></body></html>
